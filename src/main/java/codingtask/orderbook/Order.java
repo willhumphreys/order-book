@@ -44,6 +44,38 @@ public class Order extends ResourceSupport {
                 ", entryDate=" + entryDate +
                 ", instrumentId=" + instrumentId +
                 ", price=" + price +
+                ", id='" + getId() + '\'' +
                 '}';
+    }
+
+    public static class Builder {
+        private int quantity;
+        private LocalDateTime entryDate;
+        private int instrumentId;
+        private BigDecimal price;
+
+        public Builder setQuantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder setEntryDate(LocalDateTime entryDate) {
+            this.entryDate = entryDate;
+            return this;
+        }
+
+        public Builder setInstrumentId(int instrumentId) {
+            this.instrumentId = instrumentId;
+            return this;
+        }
+
+        public Builder setPrice(BigDecimal price) {
+            this.price = price;
+            return this;
+        }
+
+        public Order createOrder() {
+            return new Order(quantity, entryDate, instrumentId, price);
+        }
     }
 }

@@ -22,7 +22,7 @@ public class OrderController {
     @RequestMapping("/orders")
     public HttpEntity<List<Order>> retrieveOrders() {
 
-        Order order = new Order(5, LocalDateTime.now(), 3434, BigDecimal.valueOf(1234));
+        Order order = new Order.Builder().setQuantity(5).setEntryDate(LocalDateTime.now()).setInstrumentId(3434).setPrice(BigDecimal.valueOf(1234)).createOrder();
         order.add(linkTo(methodOn(OrderController.class).retrieveOrders()).withSelfRel());
 
         return new ResponseEntity<>(Lists.newArrayList(order), HttpStatus.OK);
