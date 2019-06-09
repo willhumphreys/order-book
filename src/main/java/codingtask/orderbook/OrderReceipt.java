@@ -1,14 +1,12 @@
 package codingtask.orderbook;
 
-import org.springframework.hateoas.Link;
-
 import java.math.BigDecimal;
 
 public class OrderReceipt {
 
     private String instrument;
 
-    private Link orderId;
+    private String orderId;
     private boolean valid;
 
     private int executionQuantity;
@@ -18,7 +16,7 @@ public class OrderReceipt {
     private BigDecimal executionPrice;
     private int orderQuantity;
 
-    public OrderReceipt(String instrument, Link orderId, boolean valid, int executionQuantity, BigDecimal orderPrice, BigDecimal executionPrice, int orderQuantity) {
+    public OrderReceipt(String instrument, String orderId, boolean valid, int executionQuantity, BigDecimal orderPrice, BigDecimal executionPrice, int orderQuantity) {
         this.instrument = instrument;
         this.orderId = orderId;
         this.valid = valid;
@@ -28,7 +26,7 @@ public class OrderReceipt {
         this.orderQuantity = orderQuantity;
     }
 
-    public Link getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
@@ -74,7 +72,7 @@ public class OrderReceipt {
         private int executionQuantity;
         private BigDecimal orderPrice;
         private BigDecimal executionPrice;
-        private Link orderId;
+        private String orderId;
         private int orderQuantity;
         private String instrument;
 
@@ -107,11 +105,11 @@ public class OrderReceipt {
             return new OrderReceipt(instrument, orderId, valid, executionQuantity, orderPrice, executionPrice, orderQuantity);
         }
 
-        public Link getOrderId() {
+        public String getOrderId() {
             return this.orderId;
         }
 
-        public Builder setOrderId(Link orderId) {
+        public Builder setOrderId(String orderId) {
             this.orderId = orderId;
             return this;
         }

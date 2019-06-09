@@ -2,16 +2,16 @@ package codingtask.orderbook;
 
 import com.google.common.collect.ImmutableMap;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 public class OrderBookController {
@@ -24,17 +24,28 @@ public class OrderBookController {
     }
 
     @PostMapping("orderbooks/{id}/orders")
-    public void addOrder(String instrumentId, Order order) {
+    public ResponseEntity<Object> addOrder(@PathVariable String id, @RequestBody Order order, UriComponentsBuilder uriComponentsBuilder) {
 
-        this.orderBookService.getOrderBook(instrumentId).addOrder(order);
+        this.orderBookService.getOrderBook(id).addOrder(order);
+
+        UriComponents uriComponents =
+                uriComponentsBuilder.path("/orderbooks/{id}/orders/{orderId}").buildAndExpand(id, order.getId());
+
+        return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
     @PostMapping("orderbooks/{id}/executions")
-    public void addExecution(String instrumentId, Execution execution) throws OrderQuanityTooLargeException {
+    public ResponseEntity<Object> addExecution(@PathVariable String id, @RequestBody Execution execution) throws OrderQuanityTooLargeException {
 
-        OrderBook orderBook = this.orderBookService.getOrderBook(instrumentId);
+        OrderBook orderBook = this.orderBookService.getOrderBook(id);
 
-        this.orderBookService.addExecution(orderBook, execution);
+        try {
+            this.orderBookService.addExecution(orderBook, execution);
+        } catch (OrderQuanityTooLargeException e) {
+            throw new ResponseStatusException(BAD_REQUEST, e.getMessage());
+        }
+
+        return ResponseEntity.status(CREATED).build();
     }
 
     @PutMapping("/orderbooks/{id}/open")

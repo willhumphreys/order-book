@@ -1,7 +1,6 @@
 package codingtask.orderbook;
 
 import com.google.common.collect.Iterators;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,7 +29,12 @@ public class OrderBookService {
         return this.orderBooks.computeIfAbsent(instrumentId, OrderBook::new);
     }
 
-    public void addExecution(OrderBook orderBook, Execution execution) throws OrderQuanityTooLargeException {
+    public Execution addExecution(OrderBook orderBook, Execution execution) throws OrderQuanityTooLargeException {
+
+        if (!orderBook.getExecutionPrice().isPresent()) {
+            orderBook.setExecutionPrice(execution.getPrice());
+        }
+
 
         int validDemand = orderService.getValidDemand(orderBook);
 
@@ -45,9 +49,10 @@ public class OrderBookService {
                 executeBook(orderBook);
             }
 
+            return execution;
         }
 
-        throw new OrderQuanityTooLargeException(accumulatedExecutionQuantity, validDemand);
+        throw new OrderQuanityTooLargeException(proposedNewExecutionQuantity, validDemand);
 
     }
 
@@ -67,14 +72,15 @@ public class OrderBookService {
 
         List<Order> validOrders = this.orderService.getValidOrders(orderBook);
 
-        Map<Link, OrderReceipt.Builder> orderReceiptMap = validOrders
+        Map<String, OrderReceipt.Builder> orderReceiptMap = validOrders
                 .stream()
                 .map(order ->
                         new OrderReceipt.Builder()
                                 .setInstrument(orderBook.getInstrumentId())
                                 .setOrderQuantity(order.getQuantity())
                                 .setOrderPrice(order.getPrice())
-                                .setOrderId(order.getId()))
+                                .setOrderId(order.getId())
+                )
                 .collect(Collectors.toMap(OrderReceipt.Builder::getOrderId, identity()));
 
 

@@ -14,11 +14,12 @@ public class OrderService {
 
 
     public List<Order> getValidOrders(OrderBook orderBook) {
-        return orderBook.getOrders().stream().filter(order -> order.getPrice().compareTo(orderBook.getExecutionPrice()) >= 0).collect(Collectors.toList());
+        return orderBook.getOrders().stream()
+                .filter(order -> order.getPrice().compareTo(orderBook.getExecutionPrice().orElseThrow(() -> new IllegalStateException("Unable to calculate valid orders if the execution price is not set"))) >= 0).collect(Collectors.toList());
     }
 
     public List<Order> getInvalidOrders(OrderBook orderBook) {
-        return orderBook.getOrders().stream().filter(order -> order.getPrice().compareTo(orderBook.getExecutionPrice()) < 0).collect(Collectors.toList());
+        return orderBook.getOrders().stream().filter(order -> order.getPrice().compareTo(orderBook.getExecutionPrice().orElseThrow(() -> new IllegalStateException("Unable to calculate invalid orders if the execution price is not set"))) < 0).collect(Collectors.toList());
     }
 
     public Optional<Order> getLargestOrder(List<Order> orders) {

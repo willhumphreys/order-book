@@ -1,19 +1,21 @@
 package codingtask.orderbook;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.hateoas.ResourceSupport;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public class Order extends ResourceSupport {
+public class Order {
 
+    private String id;
     private int quantity;
     private LocalDateTime entryDate;
     private BigDecimal price;
 
-    public Order(@JsonProperty("quantity") int quantity, @JsonProperty("entryDate") LocalDateTime entryDate, @JsonProperty("price") BigDecimal price) {
+    public Order(int quantity, LocalDateTime entryDate, BigDecimal price) {
+
+        this.id = UUID.randomUUID().toString();
+
         this.quantity = quantity;
         this.entryDate = entryDate;
         this.price = price;
@@ -32,13 +34,17 @@ public class Order extends ResourceSupport {
         return price;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
-                "quantity=" + quantity +
+                "id='" + id + '\'' +
+                ", quantity=" + quantity +
                 ", entryDate=" + entryDate +
                 ", price=" + price +
-                ", id='" + getId() + '\'' +
                 '}';
     }
 

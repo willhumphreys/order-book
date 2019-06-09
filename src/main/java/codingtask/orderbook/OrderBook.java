@@ -3,6 +3,7 @@ package codingtask.orderbook;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OrderBook {
 
@@ -34,10 +35,9 @@ public class OrderBook {
         return executions;
     }
 
-    public BigDecimal getExecutionPrice() {
-        return executionPrice;
+    public Optional<BigDecimal> getExecutionPrice() {
+        return Optional.ofNullable(executionPrice);
     }
-
 
     public void open() {
 
@@ -57,12 +57,8 @@ public class OrderBook {
         this.open = false;
     }
 
-    public void addOrder(Order order) {
-        if (!this.open) {
-            throw new IllegalStateException("Order book is closed. Unable to add order " + order);
-        }
-
-        this.orders.add(order);
+    public void setExecutionPrice(BigDecimal executionPrice) {
+        this.executionPrice = executionPrice;
     }
 
     public void addExecution(Execution execution) {
@@ -89,5 +85,15 @@ public class OrderBook {
                 ", executionPrice=" + executionPrice +
                 ", open=" + open +
                 '}';
+    }
+
+    public Order addOrder(Order order) {
+        if (!this.open) {
+            throw new IllegalStateException("Order book is closed. Unable to add order " + order);
+        }
+
+        this.orders.add(order);
+
+        return order;
     }
 }
