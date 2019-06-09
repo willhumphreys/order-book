@@ -18,7 +18,6 @@ public class OrderBookController {
 
     private OrderBookService orderBookService;
 
-
     public OrderBookController(OrderBookService orderBookService) {
         this.orderBookService = orderBookService;
     }
@@ -35,7 +34,7 @@ public class OrderBookController {
     }
 
     @PostMapping("orderbooks/{id}/executions")
-    public ResponseEntity<Object> addExecution(@PathVariable String id, @RequestBody Execution execution) throws OrderQuanityTooLargeException {
+    public ResponseEntity<Object> addExecution(@PathVariable String id, @RequestBody Execution execution) {
 
         OrderBook orderBook = this.orderBookService.getOrderBook(id);
 
