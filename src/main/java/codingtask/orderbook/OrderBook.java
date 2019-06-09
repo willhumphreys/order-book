@@ -96,4 +96,8 @@ public class OrderBook {
 
         return order;
     }
+
+    public boolean isOpen() {
+        return open;
+    }
 }

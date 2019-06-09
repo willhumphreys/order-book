@@ -259,4 +259,139 @@ public class OrderBookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entryDate").value("2019-06-09T09:05:29"));
     }
+
+    @Test
+    public void returnLimitBreakDown() throws Exception {
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order2 = "{\"quantity\" : \"10\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"122\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order2)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/orders/limitbreakdown"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.122").value("10"))
+                .andExpect(jsonPath("$.120").value("5"));
+    }
+
+    @Test
+    public void return400IfTheOrderBookIsOpenAndARequestIsMadeForTheExecutionQuantity() throws Exception {
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/executions/quantity"))
+                .andExpect(status().isBadRequest())
+                .andExpect(status().reason("Execution quantity is not available if the order book is open"));
+
+    }
+
+    @Test
+    public void returnExecutionQuantityIfTheOrderBookIsClosed() throws Exception {
+
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(put("/orderbooks/goog/close")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String execution = "{\"quantity\" : \"3\", \"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/executions")
+                .content(execution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(get("/orderbooks/goog/executions/quantity"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.executionQuantity").value("3"));
+    }
+
+    @Test
+    public void returnExecutionPriceIfTheOrderBookIsClosed() throws Exception {
+
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(put("/orderbooks/goog/close")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String execution = "{\"quantity\" : \"3\", \"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/executions")
+                .content(execution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        this.mockMvc.perform(get("/orderbooks/goog/executions/price"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.executionPrice").value("120"));
+    }
+
+    @Test
+    public void return404IfExecutionPriceHasNotBeenSet() throws Exception {
+
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(put("/orderbooks/goog/close")
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/executions/price"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void return400IfTheExectionPriceIsRequestedWhenTheOrderbookIsOpen() throws Exception {
+
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/executions/price"))
+                .andExpect(status().isBadRequest())
+                .andExpect(status().reason("Execution price is not available if the order book is open"));
+
+    }
 }

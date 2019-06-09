@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class OrderBookController {
     }
 
     @PostMapping("orderbooks/{id}/orders")
-    public ResponseEntity<Object> addOrder(@PathVariable String id, @RequestBody Order order, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Map<String, String>> addOrder(@PathVariable String id, @RequestBody Order order, UriComponentsBuilder uriComponentsBuilder) {
 
         this.orderBookService.getOrderBook(id).addOrder(order);
 
@@ -38,7 +39,7 @@ public class OrderBookController {
     }
 
     @PostMapping("orderbooks/{id}/executions")
-    public ResponseEntity<Object> addExecution(@PathVariable String id, @RequestBody Execution execution) {
+    public ResponseEntity<Map<String, String>> addExecution(@PathVariable String id, @RequestBody Execution execution) {
 
         OrderBook orderBook = this.orderBookService.getOrderBook(id);
 
@@ -104,5 +105,40 @@ public class OrderBookController {
 
         return earliestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/orderbooks/{id}/orders/limitbreakdown")
+    public ResponseEntity<Map<BigDecimal, Integer>> getLimitBreakDown(@PathVariable("id") String instrumentId) {
+        List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
+        Map<BigDecimal, Integer> limitBreakDown = this.orderService.getLimitBreakDown(orders);
+
+        return ResponseEntity.ok(limitBreakDown);
+    }
+
+    @GetMapping("/orderbooks/{id}/executions/quantity")
+    public ResponseEntity<Map<String, Integer>> getExecutionQuantity(@PathVariable("id") String instrumentId) {
+        OrderBook orderBook = this.orderBookService.getOrderBook(instrumentId);
+
+        if (orderBook.isOpen()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Execution quantity is not available if the order book is open");
+        }
+
+        List<Execution> executions = orderBook.getExecutions();
+        int executionQuantity = this.orderService.getAccumulatedExecutionQuantity(executions);
+        return ResponseEntity.ok(ImmutableMap.of("executionQuantity", executionQuantity));
+
+    }
+
+    @GetMapping("/orderbooks/{id}/executions/price")
+    public ResponseEntity<ImmutableMap<String, BigDecimal>> getExecutionPrice(@PathVariable("id") String instrumentId) {
+        OrderBook orderBook = this.orderBookService.getOrderBook(instrumentId);
+
+        if (orderBook.isOpen()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Execution price is not available if the order book is open");
+        }
+
+        return orderBook.getExecutionPrice().map(body -> ResponseEntity.ok(ImmutableMap.of("executionQuantity", body))).orElseGet(() -> ResponseEntity.notFound().build());
+
+    }
+
 
 }
