@@ -11,8 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -139,5 +138,71 @@ public class OrderBookControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(status().reason("Proposed execution quantity is 6 but the valid demand is only 5"));
+    }
+
+    @Test
+    public void return404IfThereIsNoLargestOrder() throws Exception {
+        this.mockMvc.perform(get("/orderbooks/goog/orders/largest"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void returnLargestOrderWhenThereAreMultipleOrders() throws Exception {
+        this.mockMvc.perform(get("/orderbooks/goog/orders/largest"))
+                .andExpect(status().isNotFound());
+
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order2 = "{\"quantity\" : \"10\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order2)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/orders/largest"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantity").value(10));
+    }
+
+    @Test
+    public void return404IfThereIsNoSmallestOrder() throws Exception {
+        this.mockMvc.perform(get("/orderbooks/goog/orders/smallest"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void returnSmallestOrderWhenThereAreMultipleOrders() throws Exception {
+        this.mockMvc.perform(get("/orderbooks/goog/orders/smallest"))
+                .andExpect(status().isNotFound());
+
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order2 = "{\"quantity\" : \"10\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order2)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/orders/smallest"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantity").value(5));
     }
 }

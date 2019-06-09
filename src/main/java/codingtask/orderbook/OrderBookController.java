@@ -7,7 +7,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -17,9 +19,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class OrderBookController {
 
     private OrderBookService orderBookService;
+    private OrderService orderService;
 
-    public OrderBookController(OrderBookService orderBookService) {
+    public OrderBookController(OrderBookService orderBookService, OrderService orderService) {
         this.orderBookService = orderBookService;
+        this.orderService = orderService;
     }
 
     @PostMapping("orderbooks/{id}/orders")
@@ -68,4 +72,21 @@ public class OrderBookController {
         }
         return ResponseEntity.ok(ImmutableMap.of("message", format("Order book for %s has been closed", instrumentId)));
     }
+
+    @GetMapping("/orderbooks/{id}/orders/largest")
+    public ResponseEntity<Order> getLargestOrder(@PathVariable("id") String instrumentId) {
+        List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
+        Optional<Order> largestOrder = this.orderService.getLargestOrder(orders);
+
+        return largestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/orderbooks/{id}/orders/smallest")
+    public ResponseEntity<Order> getSmallestOrder(@PathVariable("id") String instrumentId) {
+        List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
+        Optional<Order> smallestOrder = this.orderService.getSmallestOrder(orders);
+
+        return smallestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }
