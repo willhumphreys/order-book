@@ -89,4 +89,20 @@ public class OrderBookController {
         return smallestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/orderbooks/{id}/orders/earliest")
+    public ResponseEntity<Order> getEarliestOrder(@PathVariable("id") String instrumentId) {
+        List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
+        Optional<Order> earliestOrder = this.orderService.getEarliestOrder(orders);
+
+        return earliestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/orderbooks/{id}/orders/last")
+    public ResponseEntity<Order> getLastOrder(@PathVariable("id") String instrumentId) {
+        List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
+        Optional<Order> earliestOrder = this.orderService.getMostRecentOrder(orders);
+
+        return earliestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }

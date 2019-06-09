@@ -148,9 +148,6 @@ public class OrderBookControllerTest {
 
     @Test
     public void returnLargestOrderWhenThereAreMultipleOrders() throws Exception {
-        this.mockMvc.perform(get("/orderbooks/goog/orders/largest"))
-                .andExpect(status().isNotFound());
-
         this.mockMvc.perform(put("/orderbooks/goog/open")
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -181,9 +178,6 @@ public class OrderBookControllerTest {
 
     @Test
     public void returnSmallestOrderWhenThereAreMultipleOrders() throws Exception {
-        this.mockMvc.perform(get("/orderbooks/goog/orders/smallest"))
-                .andExpect(status().isNotFound());
-
         this.mockMvc.perform(put("/orderbooks/goog/open")
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -204,5 +198,65 @@ public class OrderBookControllerTest {
         this.mockMvc.perform(get("/orderbooks/goog/orders/smallest"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.quantity").value(5));
+    }
+
+    @Test
+    public void return404IfThereIsNoEarliestOrder() throws Exception {
+        this.mockMvc.perform(get("/orderbooks/goog/orders/earliest"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void returnEarliestOrderWhenThereAreMultipleOrders() throws Exception {
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order2 = "{\"quantity\" : \"10\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order2)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/orders/earliest"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.entryDate").value("2019-06-09T09:04:29"));
+    }
+
+    @Test
+    public void return404IfThereIsNoLastOrder() throws Exception {
+        this.mockMvc.perform(get("/orderbooks/goog/orders/last"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void returnLastOrderWhenThereAreMultipleOrders() throws Exception {
+        this.mockMvc.perform(put("/orderbooks/goog/open")
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        String order2 = "{\"quantity\" : \"10\", \"entryDate\" : \"2019-06-09T09:04:29Z\",\"price\" : \"120\" }";
+
+        this.mockMvc.perform(post("/orderbooks/goog/orders")
+                .content(order2)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        this.mockMvc.perform(get("/orderbooks/goog/orders/last"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.entryDate").value("2019-06-09T09:05:29"));
     }
 }

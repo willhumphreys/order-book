@@ -34,7 +34,7 @@ public class OrderService {
         return orders.stream().max(Comparator.comparing(Order::getEntryDate));
     }
 
-    public Optional<Order> getOldestOrder(List<Order> orders) {
+    public Optional<Order> getEarliestOrder(List<Order> orders) {
         return orders.stream().min(Comparator.comparing(Order::getEntryDate));
     }
 
