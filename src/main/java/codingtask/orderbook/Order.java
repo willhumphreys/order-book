@@ -11,13 +11,11 @@ public class Order extends ResourceSupport {
 
     private int quantity;
     private LocalDateTime entryDate;
-    private int instrumentId;
     private BigDecimal price;
 
-    public Order(@JsonProperty("quantity") int quantity, @JsonProperty("entryDate") LocalDateTime entryDate, @JsonProperty("instrumentId") int instrumentId, @JsonProperty("price") BigDecimal price) {
+    public Order(@JsonProperty("quantity") int quantity, @JsonProperty("entryDate") LocalDateTime entryDate, @JsonProperty("price") BigDecimal price) {
         this.quantity = quantity;
         this.entryDate = entryDate;
-        this.instrumentId = instrumentId;
         this.price = price;
     }
 
@@ -29,9 +27,6 @@ public class Order extends ResourceSupport {
         return entryDate;
     }
 
-    public int getInstrumentId() {
-        return instrumentId;
-    }
 
     public BigDecimal getPrice() {
         return price;
@@ -42,7 +37,6 @@ public class Order extends ResourceSupport {
         return "Order{" +
                 "quantity=" + quantity +
                 ", entryDate=" + entryDate +
-                ", instrumentId=" + instrumentId +
                 ", price=" + price +
                 ", id='" + getId() + '\'' +
                 '}';
@@ -51,7 +45,6 @@ public class Order extends ResourceSupport {
     public static class Builder {
         private int quantity;
         private LocalDateTime entryDate;
-        private int instrumentId;
         private BigDecimal price;
 
         public Builder setQuantity(int quantity) {
@@ -64,18 +57,13 @@ public class Order extends ResourceSupport {
             return this;
         }
 
-        public Builder setInstrumentId(int instrumentId) {
-            this.instrumentId = instrumentId;
-            return this;
-        }
-
         public Builder setPrice(BigDecimal price) {
             this.price = price;
             return this;
         }
 
         public Order createOrder() {
-            return new Order(quantity, entryDate, instrumentId, price);
+            return new Order(quantity, entryDate, price);
         }
     }
 }

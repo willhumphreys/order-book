@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 public class OrderReceipt {
 
+    private String instrument;
+
     private Link orderId;
     private boolean valid;
 
@@ -16,7 +18,8 @@ public class OrderReceipt {
     private BigDecimal executionPrice;
     private int orderQuantity;
 
-    public OrderReceipt(Link orderId, boolean valid, int executionQuantity, BigDecimal orderPrice, BigDecimal executionPrice, int orderQuantity) {
+    public OrderReceipt(String instrument, Link orderId, boolean valid, int executionQuantity, BigDecimal orderPrice, BigDecimal executionPrice, int orderQuantity) {
+        this.instrument = instrument;
         this.orderId = orderId;
         this.valid = valid;
         this.executionQuantity = executionQuantity;
@@ -49,10 +52,15 @@ public class OrderReceipt {
         return orderQuantity;
     }
 
+    public String getInstrument() {
+        return instrument;
+    }
+
     @Override
     public String toString() {
         return "OrderReceipt{" +
-                "orderId='" + orderId + '\'' +
+                "instrument='" + instrument + '\'' +
+                ", orderId=" + orderId +
                 ", valid=" + valid +
                 ", executionQuantity=" + executionQuantity +
                 ", orderPrice=" + orderPrice +
@@ -68,6 +76,7 @@ public class OrderReceipt {
         private BigDecimal executionPrice;
         private Link orderId;
         private int orderQuantity;
+        private String instrument;
 
         public Builder setValid(boolean valid) {
             this.valid = valid;
@@ -89,8 +98,13 @@ public class OrderReceipt {
             return this;
         }
 
+        public Builder setInstrument(String instrument) {
+            this.instrument = instrument;
+            return this;
+        }
+
         public OrderReceipt createOrderReceipt() {
-            return new OrderReceipt(orderId, valid, executionQuantity, orderPrice, executionPrice, orderQuantity);
+            return new OrderReceipt(instrument, orderId, valid, executionQuantity, orderPrice, executionPrice, orderQuantity);
         }
 
         public Link getOrderId() {
@@ -110,6 +124,7 @@ public class OrderReceipt {
             this.orderQuantity = quantity;
             return this;
         }
+
 
         public boolean isFilled() {
             return this.orderQuantity == executionQuantity;

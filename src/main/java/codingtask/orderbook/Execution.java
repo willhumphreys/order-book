@@ -12,6 +12,14 @@ public class Execution {
         this.price = price;
     }
 
+    public static Execution atMarket(int quantity) {
+        return new Execution(quantity, null);
+    }
+
+    public static Execution atLimit(int quantity, BigDecimal price) {
+        return new Execution(quantity, price);
+    }
+
     public int getQuantity() {
         return quantity;
     }
