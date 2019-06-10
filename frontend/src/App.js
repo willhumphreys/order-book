@@ -70,7 +70,7 @@ const OrderRenderer = ({ order, children }) => {
     <div>
       {children}
       Quantity: {order.quantity}
-      Price: {order.price}
+      Price: {order.price === null ? "At Market" : order.price}
       Entry Date: {order.entryDate}
     </div>
   );
