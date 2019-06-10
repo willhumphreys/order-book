@@ -39,6 +39,10 @@ class App extends Component {
   render() {
     return (
       <div>
+        <p>
+          Very basic front end that only calls a small subset of the available
+          endpoints :-)
+        </p>
         <OrderForm />
 
         <Orders />
