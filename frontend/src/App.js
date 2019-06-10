@@ -3,38 +3,38 @@ import logo from "./logo.svg";
 import "./App.css";
 
 class App extends Component {
-    componentDidMount() {
-        setInterval(this.requestOrders, 250);
-    }
+  componentDidMount() {
+    setInterval(this.requestOrders, 250);
+  }
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {};
+    this.state = {};
 
-        this.submitOrder = this.submitOrder.bind(this);
-    }
+    this.submitOrder = this.submitOrder.bind(this);
+  }
 
-    submitOrder = () =;
+  submitOrder = () =;
 > {
-    const;
-    instrument = this.state.instrument;
+  const;
+  instrument = this.state.instrument;
 
-    fetch(
+  fetch(
 
-    "/api/orderbooks/";
+  "/api/orderbooks/";
 +
-    instrument;
+  instrument;
 +
-    "/orders";
+  "/orders";
 , {
-    method: "post";
+  method: "post";
 ,
-    body: {
+  body: {
         quantity: 10,
         entryDate: "2019-06-09T09:04:29Z",
         price: 20
-    }
+  }
 }
 
 )
@@ -43,7 +43,7 @@ then(response = > response.text();
 )
 .
 then(message = > {
-    this.setState({message: message});
+  this.setState({message: message});
 })
 }
 submitOrder();
@@ -60,33 +60,33 @@ render();
         < Orders / >
 
         < h2 > Order;
-    Statistics < /h2>
-    < OrderStatistic;
-    url = "/api/orderbooks/CSGN/orders/smallest" >
-        < b > Smallest;
-    Order < /b>
-    < br / >
-    < /OrderStatistic>
-    < OrderStatistic;
-    url = "/api/orderbooks/CSGN/orders/largest" >
-        < b > Largest;
-    Order < /b>
-    < br / >
-    < /OrderStatistic>
-    < OrderStatistic;
-    url = "/api/orderbooks/CSGN/orders/earliest" >
-        < b > Earliest;
-    Order < /b>
-    < br / >
-    < /OrderStatistic>
-    < OrderStatistic;
-    url = "/api/orderbooks/CSGN/orders/last" >
-        < b > Most;
-    Recent;
-    Order < /b>
-    < br / >
-    < /OrderStatistic>
-    < /div>;
+  Statistics < /h2>
+  < OrderStatistic;
+  url = "/api/orderbooks/CSGN/orders/smallest" >
+      < b > Smallest;
+  Order < /b>
+  < br / >
+  < /OrderStatistic>
+  < OrderStatistic;
+  url = "/api/orderbooks/CSGN/orders/largest" >
+      < b > Largest;
+  Order < /b>
+  < br / >
+  < /OrderStatistic>
+  < OrderStatistic;
+  url = "/api/orderbooks/CSGN/orders/earliest" >
+      < b > Earliest;
+  Order < /b>
+  < br / >
+  < /OrderStatistic>
+  < OrderStatistic;
+  url = "/api/orderbooks/CSGN/orders/last" >
+      < b > Most;
+  Recent;
+  Order < /b>
+  < br / >
+  < /OrderStatistic>
+  < /div>;;
 )
 }
 }
@@ -94,55 +94,55 @@ render();
 const OrderRenderer = ({order, children}) =;
 >
 {
-    return (
-        < div >
-        {children};
-    {
-        order.quantity
-    }
-    {
-        order.price
-    }
-    Entry;
-    {
-        order.entryDate
-    }
+  return (
+      < div >
+      {children};
+  {
+    order.quantity
+  }
+  {
+    order.price
+  }
+  Entry;
+  {
+    order.entryDate
+  }
 <
-    /div>;
+  /div>;;
 )
 }
 
 class Orders extends React.Component {
-    componentDidMount() {
-        setInterval(this.requestOrders, 250);
-    }
+  componentDidMount() {
+    setInterval(this.requestOrders, 250);
+  }
 
-    requestOrders = () =;
+  requestOrders = () =;
 > {
-    fetch(
+  fetch(
 
-    "/api/orderbooks/CSGN/orders";
+  "/api/orderbooks/CSGN/orders";
 )
 .
 
-    then(response =
+  then(response =
 
 >
-    response;
+  response;
 .
 
-    json()
+  json()
 
 )
 .
 
-    then(orders =
+  then(orders =
 
 > {
-    this;
+  this;
 .
 
-    setState({orders});
+  setState({orders});
 }
 
 )
@@ -150,143 +150,143 @@ class Orders extends React.Component {
 constructor(props);
 {
     super(props);
-    this.state = {orders: []};
+  this.state = {orders: []};
 }
 
 render();
 {
     return (
         < div >
-        < h2 > Orders < /h2>;
-    {
-        this.state.orders.map((order, key) = > (
-        < OrderRenderer;
-        key = {order.id};
-        order = {order};
-        />;
-    ))
-    }
+        < h2 > Orders < /h2>;;
+  {
+    this.state.orders.map((order, key) = > (
+    < OrderRenderer;
+    key = {order.id};
+    order = {order};
+    />;;
+  ))
+  }
 <
-    /div>;
+  /div>;;
 )
 }
 }
 
 class OrderStatistic extends React.Component {
-    componentDidMount() {
-        setInterval(this.requestOrder, 250);
-    }
+  componentDidMount() {
+    setInterval(this.requestOrder, 250);
+  }
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {order: {}, url: props.url, title: props.children};
-    }
+    this.state = {order: {}, url: props.url, title: props.children};
+  }
 
-    requestOrder = () =;
+  requestOrder = () =;
 > {
-    fetch(
+  fetch(
 
-    this;
+  this;
 .
-    state;
+  state;
 .
-    url;
+  url;
 )
 .
 
-    then(response =
+  then(response =
 
 > {
-    if(response
+  if(response
 
 .
-    ok;
+  ok;
 ) {
-    return;
-    response;
+  return;
+  response;
 .
 
-    json();
+  json();
 }
 
 else
 if (response.status === 404) {
-    return {};
+  return {};
 }
 })
 .
 then(order = > {
-    this.setState({order});
+  this.setState({order});
 })
 }
 render();
 {
     return (
         < OrderRenderer;
-    order = {this.state.order} > {this.state.title} < /OrderRenderer>;
+  order = {this.state.order} > {this.state.title} < /OrderRenderer>;;
 )
 }
 }
 
 class OrderForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {instrument: "CSGN", quantity: "", price: ""};
+  constructor(props) {
+    super(props);
+    this.state = {instrument: "CSGN", quantity: "", price: "", entryDate: ""};
 
-        this.handleQuantityChange = this.handleQuantityChange.bind(this);
-        this.handlePriceChange = this.handlePriceChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+    this.handleQuantityChange = this.handleQuantityChange.bind(this);
+    this.handlePriceChange = this.handlePriceChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-    handleQuantityChange(event) {
-        this.setState({quantity: event.target.value});
-    }
+  handleQuantityChange(event) {
+    this.setState({quantity: event.target.value});
+  }
 
-    handlePriceChange(event) {
-        this.setState({price: event.target.value});
-    }
+  handlePriceChange(event) {
+    this.setState({price: event.target.value});
+  }
 
-    handleSubmit(event) {
-        this.submitOrder();
-        event.preventDefault();
-    }
+  handleSubmit(event) {
+    this.submitOrder();
+    event.preventDefault();
+  }
 
-    submitOrder = () =;
+  submitOrder = () =;
 > {
-    const;
-    instrument = this.state.instrument;
+  const;
+  instrument = this.state.instrument;
 
-    fetch(
+  fetch(
 
-    "/api/orderbooks/";
+  "/api/orderbooks/";
 +
-    instrument;
+  instrument;
 +
-    "/orders";
+  "/orders";
 , {
-    method: "post";
+  method: "post";
 ,
-    headers: {
+  headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
-    };
+  };
 ,
-    body: JSON.stringify;
+  body: JSON.stringify;
 ( {
-    quantity: this;
+  quantity: this;
 .
-    state;
+  state;
 .
-    quantity;
+  quantity;
 ,
-    entryDate: new Date;
+  entryDate: new Date;
 (),
-    price: this;
+  price: this;
 .
-    state;
+  state;
 .
-    price
+  price
 }
 
 )
@@ -296,38 +296,38 @@ then(response = > response.text();
 )
 .
 then(message = > {
-    this.setState({message: message});
+  this.setState({message: message});
 })
 }
 render();
 {
     return (
         < form;
-    onSubmit = {this.handleSubmit} >
-        < label >
-        Quantity;
+  onSubmit = {this.handleSubmit} >
+      < label >
+      Quantity;
 :
 <
-    input;
-    type = "text";
-    value = {this.state.quantity};
-    onChange = {this.handleQuantityChange};
-    />
-    < /label>
-    < label >
-    Price;
+  input;
+  type = "text";
+  value = {this.state.quantity};
+  onChange = {this.handleQuantityChange};
+  />
+  < /label>
+  < label >
+  Price;
 :
 <
-    input;
-    type = "text";
-    value = {this.state.price};
-    onChange = {this.handlePriceChange};
-    />
-    < /label>
-    < input;
-    type = "submit";
-    value = "Submit" / >
-        < /form>;
+  input;
+  type = "text";
+  value = {this.state.price};
+  onChange = {this.handlePriceChange};
+  />
+  < /label>
+  < input;
+  type = "submit";
+  value = "Submit" / >
+      < /form>;;
 )
 }
 }

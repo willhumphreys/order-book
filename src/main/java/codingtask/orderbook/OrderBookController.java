@@ -16,7 +16,8 @@ import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 
-@RestController
+@RestController()
+@RequestMapping("api/orderbooks")
 public class OrderBookController {
 
     private OrderBookService orderBookService;
@@ -29,23 +30,23 @@ public class OrderBookController {
         this.receiptService = receiptService;
     }
 
-    @GetMapping("/orderbooks/{id}/orders")
+    @GetMapping("/{id}/orders")
     public ResponseEntity<List<Order>> getOrders(@PathVariable("id") String id) {
         return ResponseEntity.ok(this.orderBookService.getOrderBook(id).getOrders());
     }
 
-    @PostMapping("orderbooks/{id}/orders")
+    @PostMapping("/{id}/orders")
     public ResponseEntity<Map<String, String>> addOrder(@PathVariable String id, @RequestBody Order order, UriComponentsBuilder uriComponentsBuilder) {
 
         this.orderBookService.getOrderBook(id).addOrder(order);
 
         UriComponents uriComponents =
-                uriComponentsBuilder.path("/orderbooks/{id}/orders/{orderId}").buildAndExpand(id, order.getId());
+                uriComponentsBuilder.path("/api/orderbooks/{id}/orders/{orderId}").buildAndExpand(id, order.getId());
 
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
-    @PostMapping("orderbooks/{id}/executions")
+    @PostMapping("/{id}/executions")
     public ResponseEntity<Map<String, String>> addExecution(@PathVariable String id, @RequestBody Execution execution) {
 
         OrderBook orderBook = this.orderBookService.getOrderBook(id);
@@ -59,7 +60,7 @@ public class OrderBookController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @PutMapping("/orderbooks/{id}/open")
+    @PutMapping("/{id}/open")
     public ResponseEntity<Map<String, String>> openOrderBook(@PathVariable("id") String instrumentId) {
         try {
             this.orderBookService.getOrderBook(instrumentId).open();
@@ -70,7 +71,7 @@ public class OrderBookController {
         return ResponseEntity.ok(ImmutableMap.of("message", format("Order book for %s has been opened", instrumentId)));
     }
 
-    @PutMapping("/orderbooks/{id}/close")
+    @PutMapping("/{id}/close")
     public ResponseEntity<Map<String, String>> closeOrderBook(@PathVariable("id") String instrumentId) {
         try {
             this.orderBookService.getOrderBook(instrumentId).close();
@@ -81,7 +82,7 @@ public class OrderBookController {
         return ResponseEntity.ok(ImmutableMap.of("message", format("Order book for %s has been closed", instrumentId)));
     }
 
-    @GetMapping("/orderbooks/{id}/orders/largest")
+    @GetMapping("/{id}/orders/largest")
     public ResponseEntity<Order> getLargestOrder(@PathVariable("id") String instrumentId) {
         List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
         Optional<Order> largestOrder = this.orderService.getLargestOrder(orders);
@@ -89,7 +90,7 @@ public class OrderBookController {
         return largestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/orderbooks/{id}/orders/smallest")
+    @GetMapping("/{id}/orders/smallest")
     public ResponseEntity<Order> getSmallestOrder(@PathVariable("id") String instrumentId) {
         List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
         Optional<Order> smallestOrder = this.orderService.getSmallestOrder(orders);
@@ -97,7 +98,7 @@ public class OrderBookController {
         return smallestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/orderbooks/{id}/orders/earliest")
+    @GetMapping("/{id}/orders/earliest")
     public ResponseEntity<Order> getEarliestOrder(@PathVariable("id") String instrumentId) {
         List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
         Optional<Order> earliestOrder = this.orderService.getEarliestOrder(orders);
@@ -105,7 +106,7 @@ public class OrderBookController {
         return earliestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/orderbooks/{id}/orders/last")
+    @GetMapping("/{id}/orders/last")
     public ResponseEntity<Order> getLastOrder(@PathVariable("id") String instrumentId) {
         List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
         Optional<Order> earliestOrder = this.orderService.getMostRecentOrder(orders);
@@ -113,7 +114,7 @@ public class OrderBookController {
         return earliestOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/orderbooks/{id}/orders/limitbreakdown")
+    @GetMapping("/{id}/orders/limitbreakdown")
     public ResponseEntity<Map<BigDecimal, Integer>> getLimitBreakDown(@PathVariable("id") String instrumentId) {
         List<Order> orders = this.orderBookService.getOrderBook(instrumentId).getOrders();
         Map<BigDecimal, Integer> limitBreakDown = this.orderService.getLimitBreakDown(orders);
@@ -121,7 +122,7 @@ public class OrderBookController {
         return ResponseEntity.ok(limitBreakDown);
     }
 
-    @GetMapping("/orderbooks/{id}/executions/quantity")
+    @GetMapping("/{id}/executions/quantity")
     public ResponseEntity<Map<String, Integer>> getExecutionQuantity(@PathVariable("id") String instrumentId) {
         OrderBook orderBook = this.orderBookService.getOrderBook(instrumentId);
 
@@ -135,7 +136,7 @@ public class OrderBookController {
 
     }
 
-    @GetMapping("/orderbooks/{id}/executions/price")
+    @GetMapping("/{id}/executions/price")
     public ResponseEntity<ImmutableMap<String, BigDecimal>> getExecutionPrice(@PathVariable("id") String instrumentId) {
         OrderBook orderBook = this.orderBookService.getOrderBook(instrumentId);
 
@@ -146,7 +147,7 @@ public class OrderBookController {
         return orderBook.getExecutionPrice().map(body -> ResponseEntity.ok(ImmutableMap.of("executionPrice", body))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/orderbooks/{id}/orders/{orderId}")
+    @GetMapping("/{id}/orders/{orderId}")
     public ResponseEntity<OrderReceipt> getOrderDetails(@PathVariable("id") String instrumentId, @PathVariable("orderId") String orderId) {
         return receiptService.get(orderId).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
