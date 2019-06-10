@@ -28,6 +28,11 @@ public class OrderBookControllerTest {
     @Test
     public void return200WithOrderBookIsOpened() throws Exception {
 
+        this.mockMvc.perform(put("/orderbooks/goog/close")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Order book for goog has been closed"));
+
         this.mockMvc.perform(put("/orderbooks/goog/open")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -60,6 +65,11 @@ public class OrderBookControllerTest {
 
     @Test
     public void returnStatusCode400IfTheCloseActionIsPerformedOnAClosedOrderBook() throws Exception {
+
+        this.mockMvc.perform(put("/orderbooks/goog/close")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
         this.mockMvc.perform(put("/orderbooks/goog/close")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -330,11 +340,6 @@ public class OrderBookControllerTest {
 
     @Test
     public void returnExecutionPriceIfTheOrderBookIsClosed() throws Exception {
-
-        this.mockMvc.perform(put("/orderbooks/goog/open")
-                .accept(MediaType.APPLICATION_JSON));
-
-
         String order = "{\"quantity\" : \"5\", \"entryDate\" : \"2019-06-09T09:05:29Z\",\"price\" : \"120\" }";
 
         this.mockMvc.perform(post("/orderbooks/goog/orders")

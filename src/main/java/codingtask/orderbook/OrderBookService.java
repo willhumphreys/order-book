@@ -29,7 +29,7 @@ public class OrderBookService {
         return this.orderBooks.computeIfAbsent(instrumentId, OrderBook::new);
     }
 
-    public Execution addExecution(OrderBook orderBook, Execution execution) throws OrderQuanityTooLargeException {
+    public Execution addExecution(OrderBook orderBook, Execution execution) throws ExecutionQuanityTooLargeException {
 
         if (!orderBook.getExecutionPrice().isPresent()) {
             orderBook.setExecutionPrice(execution.getPrice());
@@ -51,7 +51,7 @@ public class OrderBookService {
             return execution;
         }
 
-        throw new OrderQuanityTooLargeException(proposedNewExecutionQuantity, validDemand);
+        throw new ExecutionQuanityTooLargeException(proposedNewExecutionQuantity, validDemand);
 
     }
 

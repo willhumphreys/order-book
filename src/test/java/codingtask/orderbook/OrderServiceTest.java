@@ -114,8 +114,6 @@ class OrderServiceTest {
     void calculateValidDemand() {
         OrderBook orderBook = new OrderBook("CSGN");
 
-        orderBook.open();
-
         orderBook.addOrder(new Order.Builder()
                 .setQuantity(10)
                 .setPrice(TEN)
@@ -136,8 +134,6 @@ class OrderServiceTest {
     @Test
     void calculateInvalidDemand() {
         OrderBook orderBook = new OrderBook("CSGN");
-
-        orderBook.open();
 
         orderBook.addOrder(new Order.Builder()
                 .setQuantity(10)
@@ -160,8 +156,6 @@ class OrderServiceTest {
     void calculateValidOrders() {
         OrderBook orderBook = new OrderBook("CSGN");
 
-        orderBook.open();
-
         orderBook.addOrder(new Order.Builder()
                 .setQuantity(10)
                 .setPrice(TEN)
@@ -183,8 +177,6 @@ class OrderServiceTest {
     @Test
     void calculateInvalidOrders() {
         OrderBook orderBook = new OrderBook("CSGN");
-
-        orderBook.open();
 
         orderBook.addOrder(new Order.Builder()
                 .setQuantity(10)

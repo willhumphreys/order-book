@@ -31,7 +31,7 @@ class OrderBookTest {
 
         assertThat(csgnOrderBook, is(notNullValue()));
         assertThat(csgnOrderBook.getExecutionPrice().isPresent(), is(false));
-        assertThat(csgnOrderBook.isOpen(), is(false));
+        assertThat(csgnOrderBook.isOpen(), is(true));
         assertThat(csgnOrderBook.getExecutionPrice().isPresent(), is(false));
         assertThat(csgnOrderBook.getInstrumentId(), is(equalTo("CSGN")));
         assertThat(csgnOrderBook.getOrders().isEmpty(), is(true));
@@ -40,6 +40,8 @@ class OrderBookTest {
 
     @Test
     void throwExceptionIfYouTryToAddOrdersToAClosedOrderBook() {
+        csgnOrderBook.close();
+
         Order order = new Order.Builder()
                 .setEntryDate(LocalDateTime.now())
                 .setPrice(TEN)
@@ -51,8 +53,6 @@ class OrderBookTest {
 
     @Test
     void orderBookCanBeOpenedAndOrdersAddedToIt() {
-        csgnOrderBook.open();
-
         LocalDateTime orderDate = LocalDateTime.now();
         Order order = new Order.Builder()
                 .setEntryDate(orderDate)
@@ -74,8 +74,6 @@ class OrderBookTest {
 
     @Test
     void throwsExceptionIfYouTryToAddExecutionsToAnOpenOrderBook() {
-        csgnOrderBook.open();
-
         assertThrows(IllegalStateException.class, () -> csgnOrderBook.addExecution(new Execution(10, TEN)));
     }
 
@@ -86,14 +84,17 @@ class OrderBookTest {
 
     @Test
     void executionsCanBeAddedToAClosedOrderBook() {
+        csgnOrderBook.close();
+
         csgnOrderBook.setExecutionPrice(TEN);
         csgnOrderBook.addExecution(new Execution(10, TEN));
         csgnOrderBook.addExecution(new Execution(10, TEN));
-
     }
 
     @Test
     void throwsExceptionWhenAddingExecutionWithAPriceDifferentToTheExecutionPrice() {
+        csgnOrderBook.close();
+
         csgnOrderBook.setExecutionPrice(TEN);
         csgnOrderBook.addExecution(new Execution(10, TEN));
 
@@ -102,8 +103,6 @@ class OrderBookTest {
 
     @Test
     void executesOrderBookWhenTheExecutionQuantityEqualsTheValidOrderQuantity() {
-        csgnOrderBook.open();
-
         LocalDateTime orderDate = LocalDateTime.now();
         Order order = new Order.Builder()
                 .setEntryDate(orderDate)
@@ -116,18 +115,17 @@ class OrderBookTest {
 
     @Test
     void throwExceptionIfYouTryToOpenAnOpenOrderBook() {
-        csgnOrderBook.open();
         assertThrows(IllegalStateException.class, () -> csgnOrderBook.open());
     }
 
     @Test
     void throwExceptionIfYouTryToCloseAClosedOrderBook() {
+        csgnOrderBook.close();
         assertThrows(IllegalStateException.class, () -> csgnOrderBook.close());
     }
 
     @Test
     void closesAnOpenOrderBook() {
-        csgnOrderBook.open();
         csgnOrderBook.close();
 
         assertThat(csgnOrderBook.isOpen(), is(false));

@@ -47,7 +47,7 @@ public class OrderBookController {
 
         try {
             this.orderBookService.addExecution(orderBook, execution);
-        } catch (OrderQuanityTooLargeException e) {
+        } catch (ExecutionQuanityTooLargeException e) {
             throw new ResponseStatusException(BAD_REQUEST, e.getMessage());
         }
 
@@ -138,7 +138,7 @@ public class OrderBookController {
             throw new ResponseStatusException(BAD_REQUEST, "Execution price is not available if the order book is open");
         }
 
-        return orderBook.getExecutionPrice().map(body -> ResponseEntity.ok(ImmutableMap.of("executionQuantity", body))).orElseGet(() -> ResponseEntity.notFound().build());
+        return orderBook.getExecutionPrice().map(body -> ResponseEntity.ok(ImmutableMap.of("executionPrice", body))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/orderbooks/{id}/orders/{orderId}")

@@ -18,6 +18,7 @@ public class OrderBook {
     private boolean open;
 
     public OrderBook(String instrumentId) {
+        this.open = true;
         this.instrumentId = instrumentId;
         this.orders = new ArrayList<>();
         this.executions = new ArrayList<>();
