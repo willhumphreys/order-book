@@ -21,10 +21,12 @@ public class OrderBookController {
 
     private OrderBookService orderBookService;
     private OrderService orderService;
+    private ReceiptService receiptService;
 
-    public OrderBookController(OrderBookService orderBookService, OrderService orderService) {
+    public OrderBookController(OrderBookService orderBookService, OrderService orderService, ReceiptService receiptService) {
         this.orderBookService = orderBookService;
         this.orderService = orderService;
+        this.receiptService = receiptService;
     }
 
     @PostMapping("orderbooks/{id}/orders")
@@ -137,7 +139,11 @@ public class OrderBookController {
         }
 
         return orderBook.getExecutionPrice().map(body -> ResponseEntity.ok(ImmutableMap.of("executionQuantity", body))).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
+    @GetMapping("/orderbooks/{id}/orders/{orderId}")
+    public ResponseEntity<OrderReceipt> getOrderDetails(@PathVariable("id") String instrumentId, @PathVariable("orderId") String orderId) {
+        return receiptService.get(orderId).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 

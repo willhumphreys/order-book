@@ -35,7 +35,6 @@ public class OrderBookService {
             orderBook.setExecutionPrice(execution.getPrice());
         }
 
-
         int validDemand = orderService.getValidDemand(orderBook);
 
         int accumulatedExecutionQuantity = this.orderService.getAccumulatedExecutionQuantity(orderBook.getExecutions());
@@ -45,7 +44,7 @@ public class OrderBookService {
 
             orderBook.addExecution(execution);
 
-            if (accumulatedExecutionQuantity == validDemand) {
+            if (proposedNewExecutionQuantity == validDemand) {
                 executeBook(orderBook);
             }
 
@@ -79,6 +78,9 @@ public class OrderBookService {
                                 .setInstrument(orderBook.getInstrumentId())
                                 .setOrderQuantity(order.getQuantity())
                                 .setOrderPrice(order.getPrice())
+                                .setValid(true)
+                                .setExecutionPrice(orderBook.getExecutionPrice()
+                                        .orElseThrow(() -> new IllegalStateException("The order book cannot be executed if the execution price has not been set")))
                                 .setOrderId(order.getId())
                 )
                 .collect(Collectors.toMap(OrderReceipt.Builder::getOrderId, identity()));
