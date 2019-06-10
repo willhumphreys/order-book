@@ -10,7 +10,7 @@ Java 8 and Node are both required to build and run the application.
 
 # To view the application
 
-Navigate to `http://localhost:3000/`
+Navigate to `http://localhost:8080/`
 
  To run the front end independently navigate to the `frontend` directory and type `npm start`.
  
