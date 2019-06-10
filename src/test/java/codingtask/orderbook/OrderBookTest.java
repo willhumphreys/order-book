@@ -102,18 +102,6 @@ class OrderBookTest {
     }
 
     @Test
-    void executesOrderBookWhenTheExecutionQuantityEqualsTheValidOrderQuantity() {
-        LocalDateTime orderDate = LocalDateTime.now();
-        Order order = new Order.Builder()
-                .setEntryDate(orderDate)
-                .setPrice(TEN)
-                .setQuantity(100)
-                .createOrder();
-
-        csgnOrderBook.addOrder(order);
-    }
-
-    @Test
     void throwExceptionIfYouTryToOpenAnOpenOrderBook() {
         assertThrows(IllegalStateException.class, () -> csgnOrderBook.open());
     }

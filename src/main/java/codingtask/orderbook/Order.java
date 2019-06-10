@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static java.lang.Integer.*;
+
 public class Order {
 
     private String id;
@@ -15,7 +17,6 @@ public class Order {
     public Order(int quantity, LocalDateTime entryDate, BigDecimal price) {
 
         this.id = UUID.randomUUID().toString();
-
         this.quantity = quantity;
         this.entryDate = entryDate;
         this.price = price;

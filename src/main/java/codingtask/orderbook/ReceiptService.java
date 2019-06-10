@@ -11,7 +11,6 @@ public class ReceiptService {
 
     private Map<String, OrderReceipt> orderReceipts;
 
-
     public ReceiptService() {
         this.orderReceipts = new HashMap<>();
 
