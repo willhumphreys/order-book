@@ -29,6 +29,11 @@ public class OrderBookController {
         this.receiptService = receiptService;
     }
 
+    @GetMapping("/orderbooks/{id}/orders")
+    public ResponseEntity<List<Order>> getOrders(@PathVariable("id") String id) {
+        return ResponseEntity.ok(this.orderBookService.getOrderBook(id).getOrders());
+    }
+
     @PostMapping("orderbooks/{id}/orders")
     public ResponseEntity<Map<String, String>> addOrder(@PathVariable String id, @RequestBody Order order, UriComponentsBuilder uriComponentsBuilder) {
 
@@ -145,6 +150,4 @@ public class OrderBookController {
     public ResponseEntity<OrderReceipt> getOrderDetails(@PathVariable("id") String instrumentId, @PathVariable("orderId") String orderId) {
         return receiptService.get(orderId).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-
 }

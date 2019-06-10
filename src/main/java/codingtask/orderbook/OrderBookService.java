@@ -103,5 +103,4 @@ public class OrderBookService {
 
         this.orderBooks.remove(orderBook.getInstrumentId());
     }
-
 }
