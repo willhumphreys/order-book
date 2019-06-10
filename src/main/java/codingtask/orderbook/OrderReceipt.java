@@ -1,18 +1,15 @@
 package codingtask.orderbook;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class OrderReceipt {
 
     private String instrument;
-
     private String orderId;
     private boolean valid;
-
     private int executionQuantity;
-
     private BigDecimal orderPrice;
-
     private BigDecimal executionPrice;
     private int orderQuantity;
 
@@ -52,6 +49,19 @@ public class OrderReceipt {
 
     public String getInstrument() {
         return instrument;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderReceipt that = (OrderReceipt) o;
+        return Objects.equals(orderId, that.orderId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderId);
     }
 
     @Override

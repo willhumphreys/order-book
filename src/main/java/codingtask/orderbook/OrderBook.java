@@ -67,6 +67,10 @@ public class OrderBook {
             throw new IllegalStateException("Executions may not be added when the order book is open");
         }
 
+        if (executionPrice == null) {
+            throw new IllegalStateException("Executions can only be added after the execution price has been set");
+        }
+
         if (execution.getPrice().compareTo(executionPrice) != 0) {
             throw new IllegalStateException("Only one execution price is allowed and that is " + executionPrice);
         }
